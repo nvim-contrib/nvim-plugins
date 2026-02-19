@@ -18,19 +18,20 @@ return {
 		end
 
 		local core = require("astrocore")
-		local adapter = require("nvim-ginkgo")
 		local ginkgo_opts = core.plugin_opts("nvim-ginkgo")
+		local ginkgo_adapter = require("nvim-ginkgo")
 
 		-- enable coverage flags when nvim-coverage is available
-		local has_coverage = pcall(require, "coverage")
+		local has_coverage, coverage_config = pcall(require, "coverage.config")
 		if has_coverage then
 			if not ginkgo_opts.command then
 				ginkgo_opts.command = { "ginkgo", "run", "-v" }
 			end
+			local go_coverage_file = coverage_config.lang.go.coverage_file
 			table.insert(ginkgo_opts.command, "-cover")
-			table.insert(ginkgo_opts.command, "-coverprofile=coverage.out")
+			table.insert(ginkgo_opts.command, "-coverprofile=" .. go_coverage_file)
 		end
 
-		table.insert(opts.adapters, adapter.setup(ginkgo_opts))
+		table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))
 	end,
 }
