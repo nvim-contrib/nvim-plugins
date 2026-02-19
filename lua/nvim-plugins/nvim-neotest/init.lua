@@ -27,7 +27,7 @@ return {
 			if not ginkgo_opts.command then
 				ginkgo_opts.command = { "ginkgo", "run", "-v" }
 			end
-			local go_coverage_file = coverage_config.lang.go.coverage_file
+			local go_coverage_file = vim.tbl_get(coverage_config.opts, "lang", "go", "coverage_file") or "coverage.out"
 			table.insert(ginkgo_opts.command, "-cover")
 			table.insert(ginkgo_opts.command, "-coverprofile=" .. go_coverage_file)
 		end
