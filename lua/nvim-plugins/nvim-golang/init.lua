@@ -8,12 +8,29 @@ return {
 			opts.adapters = {}
 		end
 
-		for index = #opts.adapters, 1, -1 do
-			local adapter = opts.adapters[index]
-			-- we should replace the adapter
+		for _, adapter in ipairs(opts.adapters) do
 			if adapter.name == "neotest-golang" or adapter.name == "neotest-go" then
-				-- remove the adapter
-				table.remove(opts.adapters, index)
+				local original_filter_dir = adapter.filter_dir
+				---Filter directories when searching for test files
+				---@async
+				---@param name string Name of directory
+				---@param rel_path string Path to directory, relative to root
+				---@param root string Root directory of project
+				---@return boolean
+				adapter.filter_dir = function(name, rel_path, root)
+					local dir = root .. "/" .. rel_path
+					if
+							vim.fn.filereadable(dir .. "/suite_test.go") == 1
+							or vim.fn.filereadable(dir .. "/" .. name .. "_suite_test.go") == 1
+					then
+						return false
+					end
+					if original_filter_dir then
+						return original_filter_dir(name, rel_path, root)
+					end
+
+					return true
+				end
 			end
 		end
 
