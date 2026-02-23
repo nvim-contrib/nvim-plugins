@@ -1,4 +1,4 @@
-# nvim-golang
+# nvim-go
 
 Configures Go testing in Neovim using [neotest](https://github.com/nvim-neotest/neotest) with [nvim-ginkgo](https://github.com/nvim-contrib/nvim-ginkgo) as the Ginkgo adapter.
 
