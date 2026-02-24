@@ -4,41 +4,30 @@ return {
 	optional = true,
 	opts = function(_, opts)
 		if not opts.adapters then
-			return opts
+			return {}
 		end
-		local has_coverage = pcall(require, "coverage.config")
+
+		local has_coverage, coverage_config = pcall(require, "coverage.config")
 		if not has_coverage then
 			return opts
 		end
+
 		for _, adapter in ipairs(opts.adapters) do
 			if adapter.name == "rustaceanvim" then
-				local orig_build_spec = adapter.build_spec
+				local build_spec_base = adapter.build_spec
 				adapter.build_spec = function(args)
-					local spec = orig_build_spec(args)
+					local spec = build_spec_base(args)
 					if spec then
 						local cmd = spec.command
-						if cmd[1] == "cargo" and cmd[2] == "test" then
-							local rust_config = require("coverage.config").opts.lang.rust
-							local lcov_path = vim.fn.getcwd() .. "/" .. rust_config.coverage_file
-							local is_doctest = false
-							for _, arg in ipairs(cmd) do
-								if arg == "--doc" then
-									is_doctest = true
-									break
-								end
-							end
-							-- cargo test [...] -> cargo llvm-cov [nextest] --lcov --output-path target/lcov.info [...]
+						if cmd[1] == "cargo" then
+							local coverage_file = vim.tbl_get(coverage_config.opts, "lang", "rust", "coverage_file")
+									or "lcov.info"
+							local lcov_path = vim.fn.getcwd() .. "/" .. coverage_file
+
 							table.insert(cmd, 2, "llvm-cov")
-							if is_doctest then
-								table.insert(cmd, 4, "--lcov")
-								table.insert(cmd, 5, "--output-path")
-								table.insert(cmd, 6, lcov_path)
-							else
-								cmd[3] = "nextest"
-								table.insert(cmd, 4, "--lcov")
-								table.insert(cmd, 5, "--output-path")
-								table.insert(cmd, 6, lcov_path)
-							end
+							table.insert(cmd, 3, "--lcov")
+							table.insert(cmd, 4, "--output-path")
+							table.insert(cmd, 5, lcov_path)
 						end
 					end
 					return spec
