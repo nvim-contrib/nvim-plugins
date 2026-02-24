@@ -3,6 +3,7 @@ return {
 	dependencies = {
 		"nvim-contrib/nvim-ginkgo",
 	},
+	optional = true,
 	opts = function(_, opts)
 		if not opts.adapters then
 			opts.adapters = {}
