@@ -12,8 +12,20 @@ return {
 			return opts
 		end
 
-		-- cache nightly detection — rustc --version is instant, no network calls
-		local is_nightly = vim.fn.system("rustc --version 2>/dev/null"):match("nightly") ~= nil
+		--- Detect nightly toolchain without spawning a subprocess.
+		--- Checks rust-toolchain.toml / rust-toolchain file, then RUSTUP_TOOLCHAIN env var.
+		local function is_nightly_toolchain(cwd)
+			for _, fname in ipairs({ "rust-toolchain.toml", "rust-toolchain" }) do
+				local path = cwd .. "/" .. fname
+				if vim.fn.filereadable(path) == 1 then
+					for _, line in ipairs(vim.fn.readfile(path)) do
+						if line:match("nightly") then return true end
+					end
+				end
+			end
+			local env = vim.fn.getenv("RUSTUP_TOOLCHAIN")
+			return env ~= vim.NIL and tostring(env):match("nightly") ~= nil
+		end
 
 		for _, adapter in ipairs(opts.adapters) do
 			if adapter.name == "rustaceanvim" then
@@ -23,9 +35,10 @@ return {
 					if spec then
 						local cmd = spec.command
 						if cmd[1] == "cargo" then
-							local lcov_path = vim.fn.getcwd() .. "/target/lcov.info"
+							local cwd = vim.fn.getcwd()
+							local lcov_path = cwd .. "/target/lcov.info"
 							local extra = { "llvm-cov", "--lcov" }
-							if is_nightly then table.insert(extra, "--branch") end
+							if is_nightly_toolchain(cwd) then table.insert(extra, "--branch") end
 							table.insert(extra, "--output-path")
 							table.insert(extra, lcov_path)
 							for j = #extra, 1, -1 do
