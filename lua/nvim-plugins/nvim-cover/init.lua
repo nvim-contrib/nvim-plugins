@@ -17,6 +17,21 @@ return {
 			},
 		},
 		{
+			"nvim-neotest/neotest",
+			optional = true,
+			opts = function(_, opts)
+				opts.consumers = opts.consumers or {}
+				opts.consumers.coverage = function(client)
+					client.listeners.results = function(_, _, partial)
+						if not partial then
+							require("coverage").load(nil, require("coverage.signs").is_enabled())
+						end
+					end
+					return {}
+				end
+			end,
+		},
+		{
 			"AstroNvim/astrocore",
 			optional = true,
 			opts = function(_, opts)
