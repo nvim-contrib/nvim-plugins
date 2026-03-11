@@ -21,11 +21,15 @@ return {
 						local cmd = spec.command
 						if cmd[1] == "cargo" then
 							local lcov_path = vim.fn.getcwd() .. "/target/lcov.info"
-							table.insert(cmd, 2, "llvm-cov")
-							table.insert(cmd, 3, "--lcov")
-							table.insert(cmd, 4, "--branch")
-							table.insert(cmd, 5, "--output-path")
-							table.insert(cmd, 6, lcov_path)
+							local is_nightly = vim.fn.system("rustup show active-toolchain 2>/dev/null"):match("nightly") ~= nil
+							local i = 2
+							table.insert(cmd, i, "llvm-cov") ; i = i + 1
+							table.insert(cmd, i, "--lcov")   ; i = i + 1
+							if is_nightly then
+								table.insert(cmd, i, "--branch") ; i = i + 1
+							end
+							table.insert(cmd, i, "--output-path") ; i = i + 1
+							table.insert(cmd, i, lcov_path)
 						end
 					end
 					return spec
