@@ -62,7 +62,7 @@ return {
 				}
 				maps.n[coverage_prefix .. "b"] = {
 					function()
-						require("coverage").toggle_branch_overlay()
+						require("coverage").toggle_branch_info()
 					end,
 					desc = "Toggle branch overlay",
 				}
