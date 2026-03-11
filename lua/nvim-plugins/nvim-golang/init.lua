@@ -50,31 +50,7 @@ return {
 
 			-- after tests finish, convert coverage.out → coverage/lcov.info
 			opts.consumers = opts.consumers or {}
-			opts.consumers.coverage_go = function(client)
-				client.listeners.results = function(_, _, partial)
-					if partial then return end
-					local cwd = vim.fn.getcwd()
-					local coverprofile = cwd .. "/coverage.out"
-					local lcov_out = cwd .. "/coverage/lcov.info"
-					if vim.fn.filereadable(coverprofile) == 1 then
-						vim.fn.mkdir(cwd .. "/coverage", "p")
-						vim.fn.jobstart({
-							"go", "tool", "cover",
-							"-o", lcov_out,
-							coverprofile,
-						}, {
-							on_exit = function(_, code)
-								if code == 0 then
-									vim.schedule(function()
-										require("coverage").load(lcov_out, require("coverage.signs").is_enabled())
-									end)
-								end
-							end,
-						})
-					end
-				end
-				return {}
-			end
+			opts.consumers.coverage_go = require("coverage.neotest.go")
 		end
 
 		table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))
