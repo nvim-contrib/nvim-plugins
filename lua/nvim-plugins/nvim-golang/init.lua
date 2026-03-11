@@ -40,14 +40,13 @@ return {
 		local ginkgo_adapter = require("nvim-ginkgo")
 
 		-- enable coverage flags when nvim-coverage is available
-		local has_coverage, coverage_config = pcall(require, "coverage.config")
+		local has_coverage, _ = pcall(require, "coverage.config")
 		if has_coverage then
 			if not ginkgo_opts.command then
 				ginkgo_opts.command = { "ginkgo", "run", "-v" }
 			end
-			local coverage_file = vim.tbl_get(coverage_config.opts, "lang", "go", "coverage_file") or "coverage.out"
 			table.insert(ginkgo_opts.command, "-cover")
-			table.insert(ginkgo_opts.command, "-coverprofile=" .. coverage_file)
+			table.insert(ginkgo_opts.command, "-coverprofile=coverage.out")
 		end
 
 		table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))
