@@ -3,7 +3,7 @@ return {
 	"nvim-contrib/nvim-coverage",
 	event = "User AstroFile",
 	opts = {
-		auto_reload = true,
+		auto_reload = { enabled = true },
 	},
 	dependencies = {
 		"nvim-lua/plenary.nvim",
@@ -50,9 +50,15 @@ return {
 				}
 				maps.n[coverage_prefix .. "l"] = {
 					function()
-						require("coverage").load(true)
+						require("coverage").load(nil, true)
 					end,
 					desc = "Load and show coverage",
+				}
+				maps.n[coverage_prefix .. "v"] = {
+					function()
+						require("coverage").toggle_virtual_text()
+					end,
+					desc = "Toggle virtual text hit counts",
 				}
 
 				-- Sign navigation (] / [ convention)
