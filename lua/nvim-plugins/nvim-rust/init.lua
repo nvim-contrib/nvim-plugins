@@ -17,7 +17,6 @@ return {
 		---   1. CARGO_LLVM_COV_BRANCH=0  → always disabled
 		---   2. CARGO_LLVM_COV_BRANCH=1  → always enabled
 		---   3. rust-toolchain.toml / rust-toolchain file contains "nightly"
-		---   4. RUSTUP_TOOLCHAIN env var contains "nightly"
 		local function branch_enabled(cwd)
 			local env = vim.fn.getenv("CARGO_LLVM_COV_BRANCH")
 			if env ~= vim.NIL then
@@ -32,8 +31,7 @@ return {
 					return false -- toolchain file found but no nightly
 				end
 			end
-			local rustup = vim.fn.getenv("RUSTUP_TOOLCHAIN")
-			return rustup ~= vim.NIL and tostring(rustup):match("nightly") ~= nil
+			return false
 		end
 
 		for _, adapter in ipairs(opts.adapters) do
