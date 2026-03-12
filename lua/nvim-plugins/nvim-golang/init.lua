@@ -1,10 +1,3 @@
---- Check whether a directory is a Ginkgo suite (has suite_test.go).
-local function is_ginkgo_suite(name, rel_path, root)
-	local dir = root .. "/" .. rel_path
-	return vim.fn.filereadable(dir .. "/suite_test.go") == 1
-		or vim.fn.filereadable(dir .. "/" .. name .. "_suite_test.go") == 1
-end
-
 --- Neotest consumer that finds coverage.out written by ginkgo anywhere
 --- in the project tree and loads it into nvim-coverage.
 local function ginkgo_coverage_consumer(client)
@@ -41,6 +34,13 @@ local function ginkgo_coverage_consumer(client)
 end
 
 return {
+	-- Remove neotest-golang — neotest-ginkgo handles all Go/Ginkgo tests
+	{
+		"fredrikaverpil/neotest-golang",
+		optional = true,
+		enabled = false,
+	},
+	-- Add neotest-ginkgo adapter to neotest
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
@@ -50,21 +50,6 @@ return {
 		opts = function(_, opts)
 			if not opts.adapters then
 				opts.adapters = {}
-			end
-
-			-- Patch neotest-golang to skip Ginkgo suite directories.
-			-- User opts run after astrocommunity opts, so the adapter
-			-- is already in the list at this point.
-			for _, adapter in ipairs(opts.adapters) do
-				if adapter.name == "neotest-golang" or adapter.name == "neotest-go" then
-					local original_filter_dir = adapter.filter_dir
-					adapter.filter_dir = function(name, rel_path, root)
-						if is_ginkgo_suite(name, rel_path, root) then
-							return false
-						end
-						return original_filter_dir(name, rel_path, root)
-					end
-				end
 			end
 
 			local core = require("astrocore")
