@@ -1,7 +1,7 @@
 return {
 	"nvim-neotest/neotest",
 	dependencies = {
-		"nvim-contrib/nvim-ginkgo",
+		"nvim-contrib/neotest-ginkgo",
 	},
 	optional = true,
 	opts = function(_, opts)
@@ -36,8 +36,8 @@ return {
 		end
 
 		local core = require("astrocore")
-		local ginkgo_opts = core.plugin_opts("nvim-ginkgo")
-		local ginkgo_adapter = require("nvim-ginkgo")
+		local ginkgo_opts = core.plugin_opts("neotest-ginkgo")
+		local ginkgo_adapter = require("neotest-ginkgo")
 
 		-- enable coverage flags when nvim-coverage is available
 		local has_coverage, _ = pcall(require, "coverage.config")
