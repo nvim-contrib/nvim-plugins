@@ -27,7 +27,7 @@ return {
 				ginkgo_opts.command = { "ginkgo", "run", "-v" }
 			end
 			table.insert(ginkgo_opts.command, "-cover")
-			table.insert(ginkgo_opts.command, "-coverprofile=coverage.out")
+			table.insert(ginkgo_opts.command, "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out")
 
 			opts.consumers = opts.consumers or {}
 			opts.consumers.coverage_go = require("coverage.neotest.go")
