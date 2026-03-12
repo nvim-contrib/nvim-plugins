@@ -1,0 +1,39 @@
+return {
+	-- Remove neotest-golang — neotest-ginkgo handles all Go/Ginkgo tests
+	{
+		"fredrikaverpil/neotest-golang",
+		optional = true,
+		enabled = false,
+	},
+	-- Add neotest-ginkgo adapter to neotest
+	{
+		"nvim-neotest/neotest",
+		dependencies = {
+			"nvim-contrib/neotest-ginkgo",
+		},
+		optional = true,
+		opts = function(_, opts)
+			if not opts.adapters then
+				opts.adapters = {}
+			end
+
+			local core = require("astrocore")
+			local ginkgo_opts = core.plugin_opts("neotest-ginkgo")
+			local ginkgo_adapter = require("neotest-ginkgo")
+
+			-- enable coverage flags when nvim-coverage is available
+			local has_coverage, _ = pcall(require, "coverage.config")
+			if has_coverage then
+				if not ginkgo_opts.command then
+					ginkgo_opts.command = { "ginkgo", "run", "-v" }
+				end
+				table.insert(ginkgo_opts.command, "-cover")
+				table.insert(ginkgo_opts.command, "-coverprofile=coverage.out")
+
+				opts.consumers = opts.consumers or {}
+			end
+
+			table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))
+		end,
+	},
+}
