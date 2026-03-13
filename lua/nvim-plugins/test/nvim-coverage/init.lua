@@ -40,9 +40,9 @@ return {
 				maps.n[coverage_prefix] = { desc = astroui.get_icon("Coverage", 1, true) .. "Coverage" }
 				maps.n[coverage_prefix .. "t"] = {
 					function()
-						require("coverage").toggle()
+						require("coverage").toggle_line_signs()
 					end,
-					desc = "Toggle coverage",
+					desc = "Toggle line signs",
 				}
 				maps.n[coverage_prefix .. "r"] = {
 					function()
@@ -76,15 +76,15 @@ return {
 				}
 				maps.n[coverage_prefix .. "h"] = {
 					function()
-						require("coverage").toggle_line_hits()
+						require("coverage").toggle_line_hints()
 					end,
-					desc = "Toggle line hits",
+					desc = "Toggle line hints",
 				}
 				maps.n[coverage_prefix .. "b"] = {
 					function()
-						require("coverage").toggle_branch_hits()
+						require("coverage").toggle_branch_hints()
 					end,
-					desc = "Toggle branch hits",
+					desc = "Toggle branch hints",
 				}
 
 				-- Sign navigation (] / [ convention)
