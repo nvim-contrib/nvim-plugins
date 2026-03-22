@@ -28,11 +28,24 @@ return {
 				if not ginkgo_opts.command then
 					ginkgo_opts.command = { "ginkgo", "run", "-v" }
 				end
-				table.insert(ginkgo_opts.command, "-cover")
-				table.insert(ginkgo_opts.command, "-coverprofile=coverage.out")
+				table.insert(ginkgo_opts.command, "--cover")
+				table.insert(ginkgo_opts.command, "--coverprofile=coverage.out")
 
 				opts.consumers = opts.consumers or {}
 				opts.consumers.coverage_go = require("coverage.neotest.go")
+			end
+
+			-- enable pprof flags when nvim-pprof is available
+			local has_pprof, _ = pcall(require, "pprof.config")
+			if has_pprof then
+				if not ginkgo_opts.command then
+					ginkgo_opts.command = { "ginkgo", "run", "-v" }
+				end
+				table.insert(ginkgo_opts.command, "--cpuprofile=cpu.pprof")
+				table.insert(ginkgo_opts.command, "--memprofile=mem.pprof")
+
+				opts.consumers = opts.consumers or {}
+				opts.consumers.pprf_go = require("pprof.neotest.go")
 			end
 
 			table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))

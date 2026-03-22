@@ -1,0 +1,93 @@
+---@type LazySpec
+return {
+	"nvim-contrib/nvim-pprof",
+	event = "User AstroFile",
+	opts = {
+		auto_reload = { enabled = true },
+	},
+	dependencies = {
+		{
+			"AstroNvim/astroui",
+			opts = {
+				icons = {
+					Tests = "󰗇",
+					PProf = "",
+				},
+			},
+		},
+		{
+			"nvim-neotest/neotest",
+			optional = true,
+			opts = function(_, opts)
+				opts.consumers = opts.consumers or {}
+				opts.consumers.pprof = require("pprof.neotest")
+			end,
+		},
+		{
+			"AstroNvim/astrocore",
+			optional = true,
+			opts = function(_, opts)
+				local astroui = require("astroui")
+				local maps = opts.mappings
+
+				local tests_prefix = "<Leader>T"
+				local pprofile_prefix = tests_prefix .. "P"
+
+				-- INFO: Compatibility with `neotest` and `vim-test`
+				maps.n[tests_prefix] = { desc = astroui.get_icon("Tests", 1, true) .. "Tests" }
+
+				maps.n[pprofile_prefix] = { desc = astroui.get_icon("PProf", 1, true) .. "PProf" }
+				maps.n[pprofile_prefix .. "l"] = {
+					function()
+						require("pprof").load()
+					end,
+					desc = "Load pprof profile",
+				}
+				maps.n[pprofile_prefix .. "s"] = {
+					function()
+						require("pprof").toggle_line_signs()
+					end,
+					desc = "Toggle line signs",
+				}
+				maps.n[pprofile_prefix .. "t"] = {
+					function()
+						require("pprof").top()
+					end,
+					desc = "Show pprof top funcs",
+				}
+				maps.n[pprofile_prefix .. "p"] = {
+					function()
+						require("pprof").peek()
+					end,
+					desc = "Peek pprof func",
+				}
+				maps.n[pprofile_prefix .. "h"] = {
+					function()
+						require("pprof").toggle_line_hints()
+					end,
+					desc = "Toggle line hints",
+				}
+				maps.n[pprofile_prefix .. "c"] = {
+					function()
+						require("pprof").clear()
+					end,
+					desc = "Clear pprof",
+				}
+
+				-- Sign navigation (] / [ convention)
+				maps.n["]P"] = {
+					function()
+						require("pprof").jump_next()
+					end,
+					desc = "Next pprof line",
+				}
+				maps.n["[P"] = {
+					function()
+						require("pprof").jump_prev()
+					end,
+					desc = "Prev pprof line",
+				}
+			end,
+		},
+	},
+}

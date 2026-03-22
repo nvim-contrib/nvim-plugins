@@ -7,11 +7,12 @@
 
 ## Specs
 
-| Module | Description |
-|--------|-------------|
-| `nvim-config.lang.nvim-go` | Go — [neotest](https://github.com/nvim-neotest/neotest) with [neotest-ginkgo](https://github.com/nvim-contrib/neotest-ginkgo) adapter and coverage integration |
-| `nvim-config.lang.nvim-rust` | Rust — neotest with [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) adapter and `cargo-llvm-cov` coverage |
-| `nvim-config.test.nvim-coverage` | [nvim-coverage](https://github.com/nvim-contrib/nvim-coverage) — signs, keymaps, neotest consumer |
+| Module                           | Description                                                                                                                                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nvim-config.lang.nvim-go`       | Go — [neotest](https://github.com/nvim-neotest/neotest) with [neotest-ginkgo](https://github.com/nvim-contrib/neotest-ginkgo) adapter and coverage integration |
+| `nvim-config.lang.nvim-rust`     | Rust — neotest with [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) adapter and `cargo-llvm-cov` coverage                                               |
+| `nvim-config.test.nvim-coverage` | [nvim-coverage](https://github.com/nvim-contrib/nvim-coverage) — signs, keymaps, neotest consumer                                                              |
+| `nvim-config.test.nvim-pprof`    | [nvim-pprof](https://github.com/nvim-contrib/nvim-pprof) — signs, keymaps, neotest consumer                                                                    |
 
 ## Installation
 
@@ -26,6 +27,7 @@ require("lazy").setup({
   { import = "nvim-config.lang.nvim-go" },
   { import = "nvim-config.lang.nvim-rust" },
   { import = "nvim-config.test.nvim-coverage" },
+  { import = "nvim-config.test.nvim-pprof" },
 })
 ```
 
