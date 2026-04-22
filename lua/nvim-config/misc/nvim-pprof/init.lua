@@ -80,6 +80,16 @@ return {
 					end,
 					desc = "Clear pprof",
 				}
+				maps.n[pprofile_prefix .. "e"] = {
+					function()
+						vim.g.neotest_pprof_enabled = vim.g.neotest_pprof_enabled == false
+						vim.notify(
+							"Pprof collection " .. (vim.g.neotest_pprof_enabled and "enabled" or "disabled"),
+							vim.log.levels.INFO
+						)
+					end,
+					desc = "Toggle pprof collection",
+				}
 
 				-- Sign navigation (] / [ convention)
 				maps.n["]P"] = {

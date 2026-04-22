@@ -86,6 +86,16 @@ return {
 					end,
 					desc = "Toggle branch hints",
 				}
+				maps.n[coverage_prefix .. "e"] = {
+					function()
+						vim.g.neotest_coverage_enabled = vim.g.neotest_coverage_enabled == false
+						vim.notify(
+							"Coverage collection " .. (vim.g.neotest_coverage_enabled and "enabled" or "disabled"),
+							vim.log.levels.INFO
+						)
+					end,
+					desc = "Toggle coverage collection",
+				}
 
 				-- Sign navigation (] / [ convention)
 				maps.n["]Cu"] = {
