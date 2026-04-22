@@ -45,7 +45,7 @@ return {
 				table.insert(ginkgo_opts.command, "--memprofile=mem.pprof")
 
 				opts.consumers = opts.consumers or {}
-				opts.consumers.pprf_go = require("pprof.neotest.go")
+				opts.consumers.pprof_go = require("pprof.neotest.go")
 			end
 
 			table.insert(opts.adapters, ginkgo_adapter.setup(ginkgo_opts))
